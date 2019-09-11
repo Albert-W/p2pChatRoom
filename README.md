@@ -16,6 +16,48 @@ It is a fully decentralized p2pChatRoom. No server is needed. It is implemented 
 
 项目分为两阶段：
 
-1，启动网络阶段： 首先启动种子节点，之后启动的节点向 seed 发送启动信息， 种子节点收到信号后，更新peers 列表。  
+1，启动网络阶段： 
 
+首先启动种子节点，之后启动的节点向 seed 发送启动信息， 种子节点收到信号后，更新peers 列表。 将peers列表放送给新节点。 
+新节点收到peers 列表之后，向每个节点介绍自己。 老节点更新自己的peers列表。 
 
+2， 聊天阶段
+
+输入信息时，不指定节点id, 则广播信息。
+指定节点id, 则定向发送信息。 
+
+### Explantion
+scripy.py 启动4个xterm 做为模拟节点
+
+config.py 配置信息，包括seed 的 ip 和 port. 
+
+udp.py udp 工具包，收发信息的接口。
+
+main.py 主要通讯逻辑。
+
+通讯包的结构:
+```
+{
+    "type":"input",
+    "data":s
+}
+```
+通过不同的type, 作出不同的响应。 
+
+### Usage
+
+在多个terminal中执行main.py, 启动多个点点。第一个启动的必须是config 中的种子节点。
+
+例如：
+
+python main.py 8891 id1
+
+python main.py 8892 id2
+
+python main.py 8893 id3
+
+然后进行通信。
+
+"hello"
+
+"hello id2"
