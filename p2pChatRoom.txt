@@ -1,0 +1,34 @@
+title p2p Chat Room
+==init network==
+peer -> seed : 'newpeer'
+seed -> seed : add peer
+seed -> peer : 'peers'
+peer -> peer : extend peers
+linear 
+peer -> peer1 :broadcast 'introduce'
+peer1 -> peer2 :broadcast ''
+linear off
+parallel 
+peer1 -> peer1 :add peer
+peer2 -> peer2 :add peer
+parallel off
+==chat==
+peer -> peer2 : 'input #id'
+peer2 -> peer2 : print msg
+linear 
+peer ->seed : broadcast 'msg'
+seed ->peer1 : broadcast ''
+peer1 ->peer2 : broadcast ''
+linear off
+==exit network==
+linear 
+peer ->seed : broadcast 'exit'
+seed ->peer1 : broadcast ''
+peer1 ->peer2 : broadcast ''
+linear off
+parallel
+peer ->peer : stop threads
+seed ->seed: renew peers
+peer1 ->peer1: renew peers
+peer2 ->peer2: renew peers
+parallel off

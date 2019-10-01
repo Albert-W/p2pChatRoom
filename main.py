@@ -17,33 +17,41 @@ class Node:
             data, addr = pu.recembase(self.udp_socket)
             action = json.loads(data)
             # print(action["type"])
-            self.dispatch(action, addr)
-    def dispatch(self, action,addr):
-        if action['type'] == 'newpeer':
-            print("A new peer is coming")
-            self.peers[action['data']]= addr
-            # print(addr)
-            pu.sendJS(self.udp_socket, addr,{
-            "type":'peers',
-            "data":self.peers
-            })         
+        #     self.dispatch(action, addr)
+        # def dispatch(self, action,addr):
+            if action['type'] == 'newpeer':
+                print("A new peer is coming")
+                self.peers[action['data']]= addr
+                # print(addr)
+                pu.sendJS(self.udp_socket, addr,{
+                "type":'peers',
+                "data":self.peers
+                })         
 
-        if action['type'] == 'peers':
-            print("Received a bunch of peers")
-            self.peers.update(action['data'])
-            # introduce youself. 
-            pu.broadcastJS(self.udp_socket, {
-                "type":"introduce",
-                "data": self.myid
-            },self.peers) 
+            if action['type'] == 'peers':
+                print("Received a bunch of peers")
+                self.peers.update(action['data'])
+                # introduce youself. 
+                pu.broadcastJS(self.udp_socket, {
+                    "type":"introduce",
+                    "data": self.myid
+                },self.peers) 
 
-        if action['type'] == 'introduce':
-            print("Get a new friend.")
-            self.peers[action['data']]= addr   
+            if action['type'] == 'introduce':
+                print("Get a new friend.")
+                self.peers[action['data']]= addr   
 
-        if action['type'] == 'input':
-            print(action['data'])  
-        
+            if action['type'] == 'input':
+                print(action['data'])  
+
+            if action['type'] == 'exit':
+                if(self.myid == action['data']):
+                #cannot be closed too fast.  
+                    time.sleep(0.5) 
+                    break;
+                    # self.udp_socket.close()
+                value, key = self.peers.pop(action['data'])
+                print( action['data'] + " is left.")          
             
     def startpeer(self):
         pu.sendJS(self.udp_socket,self.seed,{
@@ -55,7 +63,11 @@ class Node:
         while 1: 
             msg_input = input("$:")
             if msg_input == "exit":
-                break    
+                pu.broadcastJS(self.udp_socket, {
+                    "type":"exit",
+                    "data":self.myid
+                },self.peers)
+                break     
             if msg_input == "friends":
                 print(self.peers) 
                 continue      

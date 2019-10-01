@@ -14,7 +14,7 @@ It is a fully decentralized p2pChatRoom. No server is needed. It is implemented 
 ## Sequence Diagram
 ![](p2pChatRoom.png)
 
-项目分为两阶段：
+项目分为三个阶段：
 
 1，启动网络阶段： 
 
@@ -27,6 +27,12 @@ It is a fully decentralized p2pChatRoom. No server is needed. It is implemented 
 输入信息时，不指定节点id, 则广播信息。
 
 指定节点id, 则定向发送信息。 
+
+3， 离开阶段
+
+输入exit, 退出。
+
+其他节点在本节点friends列表中删除对应节点。 
 
 ### Explantion
 scripy.py 启动4个xterm 做为模拟节点
@@ -63,3 +69,5 @@ python main.py 8893 id3
 "hello"
 
 "hello id2"
+
+“exit"
