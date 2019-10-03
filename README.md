@@ -35,6 +35,7 @@ It is a fully decentralized p2pChatRoom. No server is needed. It is implemented 
 其他节点在本节点friends列表中删除对应节点。 
 
 ### Explantion
+
 scripy.py 启动4个xterm 做为模拟节点
 
 config.py 配置信息，包括seed 的 ip 和 port. 
